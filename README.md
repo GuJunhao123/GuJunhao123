@@ -1,80 +1,72 @@
-# 顾君豪 · GuJunhao123
+# 顾君豪
 
-**AI Agent 开发 / Java AI 全栈 · 后端为主，专注 LLM 应用工程**
-
-江苏大学 · 软件工程本科 · 2028 届  
-寻找相关实习机会：每周可实习 **4 天**，可连续 **6 个月以上**。
-
-[GitHub 主页](https://github.com/GuJunhao123) · [公开仓库](https://github.com/GuJunhao123?tab=repositories) · [邮件联系](mailto:z86838598@163.com)
+求职意向：**Java 后端开发实习（AI 应用方向）**  
+2028 届 | 江苏大学 · 软件工程（本科） | 可实习：**每周 4 天，可连续 6 个月以上**  
+17388087295 | z86838598@163.com | [github.com/GuJunhao123](https://github.com/GuJunhao123)
 
 ---
 
 ## 关于我
 
-我主要使用 Java 构建 LLM 应用，关注从模型接入、检索与工具调用，到效果评测和前端交互的完整链路。
+2028 届软件工程本科，主攻 **Java + AI 应用工程**，构建过多个从零到可运行的完整项目：多模型批量评测平台、NoCode 网页生成平台、TSB 故障诊断助手。关注异步任务拆分、并发处理、缓存限流与数据库访问，能够结合业务实现后端接口、模型接入和前端流式交互，把 LLM 的不可控性工程化。
 
-- **Agent 与 RAG**：围绕车辆故障辅助排查，实践混合检索、条件路由、证据引用与工具调用边界。
-- **模型评测**：围绕模型选型和 Prompt 调试，实践多路流式对比、异步批量评测与 LLM-as-a-Judge。
-- **后端工程**：关注并发控制、异常隔离、事务一致性、超时与任务进度，让模型调用成为可观察、可控制的业务流程。
+- **Java 与后端开发**：掌握常用集合、面向对象与异常处理；熟悉 Spring Boot、Spring MVC、MyBatis-Flex，理解 IoC / AOP、本地事务及提交后回调；具备 CompletableFuture 异步编排、Semaphore 并发控制、Java 21 虚拟线程及进程 I/O 实践。
+- **数据库与中间件**：熟悉 MySQL 表结构设计、联合索引与游标分页；使用 Redis 实现缓存与会话记忆，结合自定义注解、AOP 与 Redisson 实现接口限流；使用 RabbitMQ 拆分异步任务，了解消息持久化、预取与并发消费。
+- **全栈与工程交付**：使用 Vue 3 + TypeScript 开发页面，具备接口设计与前后端联调实践；使用 Reactor / SSE 实现流式响应；使用 Git、Maven、Docker Compose、Nginx。
+- **AI 集成与辅助开发**：使用 Spring AI / LangChain4j 集成大模型能力；了解 Prompt、Agent、RAG、工作流编排与工具调用、MCP 工具接入；长期使用 Cursor、Codex 等 AI 开发工具辅助编码与排错。
 
 ## 代表项目
 
-### ContextFlow ｜ 新能源 TSB 诊断辅助 Agent
+### ModelBench ｜ 三位一体模型评测台
 
-围绕技术服务通报（TSB）构建故障问答与辅助排查流程，重点解决“信息是否完整、资料是否相关、回答能否追溯”的问题。
+面向模型选型与 Prompt 调试，支持多模型流式对比、提示词实验与异步批量评测，记录回答、耗时、Token 及估算费用，并生成对比报告。
 
-**技术栈：** Spring Boot · LangGraph4j · PostgreSQL / pgvector · Apache Lucene
+**技术栈：** Spring Boot · Spring AI · MyBatis-Flex · MySQL · Redis · RabbitMQ · Reactor
 
-- **混合检索**：结合 BM25 与向量召回，使用 RRF 融合排序，并按车型、年份约束检索范围。
-- **流程编排**：通过 StateGraph 串联信息检查、检索、证据判断、建议生成与引用校验；信息不足时追问，无匹配资料时返回明确状态。
-- **可追溯性**：关联证据 ID、页码与原文片段，以 requestId 和节点耗时辅助排查检索、生成及工具错误。
-- **可靠性**：使用参数校验、有界线程池、超时控制和受限纠正流程，区分无结果与调用失败。
+- **流式对比**：基于 Spring AI 为不同模型及 Prompt 变体创建独立响应流，通过 Flux.merge 合并为 SSE 输出；按变体索引隔离历史上下文，将单路调用异常转换为带模型及变体标识的错误事件，避免影响其他正常响应。
+- **异步消费**：按"模型 × 提示词"拆分 RabbitMQ 子任务，在 Spring 本地事务提交后通过 afterCommit 投递持久化消息，避免消费者提前读取未提交任务；使用 SQL 原子累加维护并发消费进度，并通过 WebSocket 推送执行状态。
+- **并发评分与报告**：使用 CompletableFuture 并行调用两个 AI 评委，将五维评价映射为结构化结果并过滤调用异常；聚合被测回答的耗时、Token 与估算费用，生成模型对比报告。
+- **限流与错误适配**：基于自定义注解、Spring AOP 与 Redisson 实现用户维度限流，将接口方法标识纳入限流 Key；针对流式请求，将限流等业务异常转换为 SSE 错误事件，解决 JSON 错误响应与流式客户端不匹配的问题。
 
-> 公开演示使用合成资料；真实业务数据与演示数据分开说明，不将合成集成绩作为真实诊断效果。在线模型和向量检索需要配置相应服务，具体能力与验证范围以项目文档为准。
+### WordFlow ｜ 语言网页编织平台
 
-### ModelBench ｜ 多模型对比与场景化评测平台
+面向自然语言生成网页应用，支持 HTML、多文件及 Vue 工程生成，提供对话记录、源码保存、应用构建与部署功能。
 
-面向模型选型与 Prompt 调试的个人全栈项目，通过 OpenRouter 接入多模型，留存回答、耗时、Token 与估算费用，为模型和提示词选择提供对比依据。
+**技术栈：** Spring Boot · LangChain4j · MyBatis-Flex · MySQL · Redis · Caffeine
 
-**技术栈：** Spring Boot · Spring AI · Reactor · RabbitMQ · Redis · MySQL · Vue 3 · TypeScript
+- **工程生成**：采用门面统一 HTML、多文件及 Vue 工程生成入口，Vue 模式通过 LangChain4j 调用文件读写、修改与删除工具，支持工程生成及增量修改；将 TokenStream 的文本与工具执行回调转换为统一消息流，展示生成过程，并设置连续工具调用上限。
+- **应用级记忆与恢复**：使用 MySQL 保存对话历史，按应用 ID 过滤、创建时间游标倒序分页，配套设计（appId, createTime）联合索引；为各应用建立 Redis 对话记忆窗口，初始化时恢复最近历史，承接多轮对话上下文；通过 Caffeine 按应用与生成类型缓存 AI 服务实例，减少重复初始化。
+- **工程构建与应用交付**：在 Vue 生成完成后异步执行工程构建，使用 ProcessBuilder 调用 npm，并行读取标准输出与错误输出，设置超时终止及依赖安装重试；部署前校验应用归属，将源码或 Vue 构建产物复制至部署目录，更新部署信息并返回访问地址。
 
-- **流式对比**：为模型和 Prompt 变体创建独立响应流，通过 Reactor 合并为 SSE；单路失败转换为独立错误事件，前端分路展示结果。
-- **上下文隔离**：按提示词变体隔离历史，支持同题多模型与同模型多提示词实验。
-- **异步评测**：按“模型 × 场景提示词”拆分 RabbitMQ 子任务，在数据库事务提交后投递持久化消息；通过 SQL 原子自增维护进度，并用 WebSocket 推送。
-- **双评委评分**：并行调用两个评委模型，进行五维结构化评分；过滤失败评委，保留有效评分、平均评级与评级标准差，结合耗时和估算费用比较结果。
+### ContextFlow ｜ 故障诊断 Agent
 
-### MCP Tool Server ｜ 面向 Agent 的自建工具集
+基于技术服务通报（TSB）构建故障诊断辅助应用，本人负责后端、检索与 Agent 编排。
 
-为 ModelBench 提供评测数据查询与任务状态工具，实践模型应用与业务系统之间的标准化连接。
+**技术栈：** Spring Boot · LangChain4j · LangGraph4j · PostgreSQL（pgvector）
 
-**技术栈：** Java · Spring AI MCP Server · TypeScript MCP SDK
-
-- **协议接入**：使用 SDK 实现 stdio 与 Streamable HTTP transport，暴露 tools 和 resources，支持客户端运行时发现与调用。
-- **业务工具**：封装“评测数据集查询”“批量任务状态”，接入 Agent 侧使用。
-- **调用约束**：设计工具权限白名单、入参 Schema 校验，并针对提示词注入与工具滥用场景做拦截验证。
+- **检索模块**：基于 pgvector 构建向量召回 pipeline，保留文档表头、TSB 编号与页码以支持溯源，叠加车型元数据过滤与领域同义词扩展（如"异响→敲击声"）提升术语匹配。
+- **工作流编排**：基于 LangGraph4j 实现"信息检查—检索—证据判断—建议生成"，通过条件边处理追问和证据不足兜底，设置执行步数与历史 Token 预算。
 
 ## 技术能力
 
-| 方向        | 技术与实践                                                   |
-| ----------- | ------------------------------------------------------------ |
-| Java 后端   | Java 集合、JUC、线程池、CompletableFuture；Spring Boot、AOP、事务 |
-| LLM 应用    | Spring AI、LangChain4j；流式调用、结构化输出、Function Calling、Prompt 对比 |
-| Agent / RAG | LangGraph4j、pgvector、Lucene BM25、RRF、证据引用、固定集评测 |
-| 数据与消息  | MySQL、PostgreSQL、Redis、Redisson、RabbitMQ                 |
-| 实时交互    | Reactor、SSE、WebSocket；Vue 3、TypeScript                   |
-| 开发与交付  | Git、Maven、Docker Compose、Nginx                            |
+| 方向 | 技术与实践 |
+| --- | --- |
+| Java 后端 | Spring Boot、Spring MVC、MyBatis-Flex；IoC / AOP、本地事务、CompletableFuture、Semaphore、Java 21 虚拟线程 |
+| 数据库与中间件 | MySQL 表结构设计、联合索引、游标分页；Redis 缓存与会话记忆、Redisson 限流；RabbitMQ 异步任务拆分 |
+| 全栈与工程交付 | Vue 3、TypeScript；Reactor、SSE、WebSocket；Git、Maven、Docker Compose、Nginx |
+| AI 集成 | Spring AI、LangChain4j；Prompt、Agent、RAG、工作流编排、工具调用、MCP |
 
 ## 教育与竞赛
 
 **江苏大学 · 软件工程 · 本科** ｜ 2024.09 – 2028.06
 
-- GPA **4.0 / 5.0**，专业排名 **3 / 117（前 3%）**。
+- GPA **4.0 / 5.0**（专业排名 **5 / 117，前 4%**），多次获校级一等奖学金。
 - 主修课程：数据结构、操作系统、计算机网络、数据库系统原理、机器学习基础。
-- **中国机器人及人工智能创新赛 · 国家二等奖（2026）**，负责系统功能接入。
+- **中国机器人及人工智能创新赛 · 国家二等奖（2026）** —— 参赛 800 支队伍；本人负责医学影像大模型的接入，基于 CUDA 实现推理加速，推理耗时降低为 1/3。
 
 ## 联系我
 
-欢迎交流 Java AI 后端、Agent / RAG 工程与模型评测，也欢迎相关实习机会。
+欢迎交流 Java 后端、AI 应用工程与模型评测，也欢迎相关实习机会。
 
 - 邮箱：[z86838598@163.com](mailto:z86838598@163.com)
 - GitHub：[GuJunhao123](https://github.com/GuJunhao123)
